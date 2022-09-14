@@ -1,0 +1,49 @@
+﻿@using RwaLib.MODELS
+@{
+    ViewBag.Title = "Transaction";
+    Book book = ViewBag.book as Book;
+    string paymentMethod = ViewBag.placanje as string;
+}
+
+<style>
+    .container{
+        position:fixed;
+        top:10%;
+        left:15%;
+
+    }
+</style>
+
+<div class="container d-flex justify-content-between px-3 py-5">
+
+    <div class="d-flex flex-row p-3" style="border: 1px solid #ccc; width:70%">
+        <div class="d-flex flex-row justify-content-center align-content-center p-3">
+            <img src="@book.PicturePath" class="m-2" width="300" height="500" />
+            <div class="d-flex flex-column p-2">
+                <h4>@book.Author.FullName: @book.Title</h4>
+                <p>@book.Description</p>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div style="border: 1px solid #ccc; " class=" p-3 w-25 d-flex flex-column justify-content-center align-content-center">
+        @if (paymentMethod != "loan")
+        {
+            <h3 style="color: #2d89ef" class="fw-bold text-center mb-3">SUCCESFULLY BOUGHT BOOK</h3>
+        }
+        else
+        {
+            <h3 style="color: #2d89ef" class="fw-bold text-center mb-3">SUCCESFULLY LOANED BOOK</h3>
+        }
+        <p class="text-center">Thank you for your transaction!</p>
+        @Html.ActionLink("Home page", "Index", "Home", null, new { @class = "btn btn-outline-dark px-4" })
+
+
+    </div>
+
+
+</div>
+
+

@@ -1,0 +1,33 @@
+﻿@model RwaLib.MODELS.Book
+@{
+    ViewBag.Title = "Purchase";
+}
+
+<div class="container d-flex justify-content-between px-3 py-5">
+
+    <div class="d-flex flex-row p-3" style="border: 1px solid #ccc; width:70%">
+        <div class="d-flex flex-row justify-content-center align-content-center p-3">
+            <img src="@Model.PicturePath" class="m-2" width="300" height="500" />
+            <div class="d-flex flex-column p-2">
+                <h4>@Model.Author.FullName: @Model.Title</h4>
+                <p>@Model.Description</p>
+                <span class="my-3 align-self-end fw-bold">@Model.Price kn</span>
+            </div>
+        </div>
+    </div>
+
+
+
+    @using (Html.BeginForm("Purchase", "Book", new { title = Model.Title }, FormMethod.Post, new { @class = "d-flex flex-columnalign-content-center justify-content-center w-25 h-50" }))
+    {
+        <div style="border: 1px solid #ccc; " class=" p-3 w-100 d-flex flex-column justify-content-center align-content-center">
+            <label class="form-label fw-bold my-4">Odaberite nacin placanja:</label>
+            <button class="btn btn-outline-dark my-2" name="placanje" value="stripe"><img src="https://upload.wikimedia.org/wikipedia/en/e/eb/Stripe_logo%2C_revised_2016.png" style="width: 75px" /></button>
+            <button class="btn btn-outline-info my-2" name="placanje" value="cash">Gotovina</button>
+
+
+        </div>
+    }
+
+
+</div>

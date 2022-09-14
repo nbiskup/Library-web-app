@@ -1,0 +1,39 @@
+﻿@model RwaLib.MODELS.Book
+@{
+    ViewBag.Title = "Loan";
+}
+
+<div class="container d-flex justify-content-between px-3 py-5">
+
+    <div class="d-flex flex-row p-3" style="border: 1px solid #ccc; width:70%">
+        <div class="d-flex flex-row justify-content-center align-content-center p-3">
+            <img src="@Model.PicturePath" class="m-2" width="250" />
+            <div class="d-flex flex-column p-2">
+                <h4>@Model.Author.FullName: @Model.Title</h4>
+                <p>@Model.Description</p>
+                <span class="my-3 align-self-end fw-bold">@Model.LoanPrice HRK/day</span>
+            </div>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Loan", "Book", new { title = Model.Title }, FormMethod.Post, new { @class = "d-flex flex-columnalign-content-center justify-content-center w-25 h-50" }))
+    {
+        <div style="border: 1px solid #ccc; " class=" p-3 w-100 d-flex flex-column justify-content-center align-content-center">
+            <label class="form-label fw-bold my-2">Loan begin date:</label>
+            <input type="date" class="form-control" id="fromDate" name="pocetak" />
+            <label class="form-label fw-bold my-2">Loan end date:</label>
+            <input type="date" class="form-control" id="toDate" name="kraj" />
+
+            <button class="btn btn-primary mt-4 mw-100">Confirm</button>
+        </div>
+    }
+
+</div>
+
+<script>$(document).ready(function () {
+        $('#fromDate').change(function () {
+            var fromDate = $('#fromDate').val();
+            $('#toDate').prop('disabled', false);
+            $("#toDate").attr("min", fromDate);
+        });
+    });</script>

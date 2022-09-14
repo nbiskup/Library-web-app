@@ -1,0 +1,121 @@
+﻿@model Application.Models.ApplicationBook
+@using RwaLib.DAL.Managers
+@{
+    ViewBag.Title = "Edit";
+    IList<SelectListItem> statuses = ViewBag.s as IList<SelectListItem>;
+    BookManager bm = ViewBag.bm as BookManager;
+    List<SelectListItem> ddlauthors = ViewBag.ddlauthors as List<SelectListItem>;
+    int qntNew = bm.GetQntOfBook(Model.Title, 1);
+    int qntUsed = bm.GetQntOfBook(Model.Title, 2);
+    int IDBook = (int)ViewBag.id;
+
+}
+
+<h2 class="" style="border-bottom: 1px solid #ccc">Edit</h2>
+
+@using (Html.BeginForm("Edit","Book",new { bookid = IDBook}))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="">
+            <div class="">
+                @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = " control-label fw-bold mb-2 col-md-2" })
+                <div class="">
+                    @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="">
+                @Html.Label("Picture path", htmlAttributes: new { @class = " control-label fw-bold mb-2 col-md-2" })
+                <div class="">
+                    @Html.EditorFor(model => model.PicturePath, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.PicturePath, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="">
+                <label class="">Author</label>
+                <div class="">
+                    @Html.DropDownList("author", ddlauthors, new { @class = "form-select" })
+                </div>
+            </div>
+
+            <div class="">
+                <label class="">Add Book State</label>
+                <div class="">
+                    @Html.DropDownList("status", statuses, new { @class = "form-select", id = "statuses" })
+                </div>
+            </div>
+
+            <div class="">
+                <label class="">Quantitiy of book</label>
+                <div class="">
+                    <input type="number" min="0" id="numOfBooks" class="form-control w-50" name="quantity" />
+                </div>
+            </div>
+
+            <div class="">
+                <label class=" control-label fw-bold mb-2 col-md-2">Purchase price</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control w-50" } })
+                    @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+        </div>
+        <div class="d-flex flex-column w-50 p-3">
+
+            <div class="form-group mb-3 ">
+                @Html.LabelFor(model => model.ISBN, htmlAttributes: new { @class = " control-label fw-bold mb-2 col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ISBN, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ISBN, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group mb-3 ">
+                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = " control-label fw-bold mb-2 col-md-2" })
+                <div class="col-md-10">
+<textarea class="form-control" name="description" style="height: 300px;">@Model.Description</textarea>
+
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group mb-3 d-flex flex-column">
+                <label class=" control-label fw-bold mb-2 col-md-2">Loan price</label>
+                <div class="col-md-10 mw-100">
+                    @Html.EditorFor(model => model.LoanPrice, new { htmlAttributes = new { @class = "form-control w-50" } })
+                    @Html.ValidationMessageFor(model => model.LoanPrice, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-3 w-100 d-flex justify-content-end">
+        <button type="submit" class="btn btn-success px-5 w-25">Save</button>
+    </div>
+
+}
+
+
+<script>
+    $(document).ready(function () {
+    var selected_option_value = $(this).find(":selected").val();
+    if (selected_option_value == 1)
+    $('#numOfBooks').val(@qntNew);
+    else
+    $('#numOfBooks').val(@qntUsed);
+    });
+    $('#statuses').on('change', function () {
+    var selected_option_value = $(this).find(":selected").val();
+    if (selected_option_value == 1)
+    $('#numOfBooks').val(@qntNew);
+    else
+    $('#numOfBooks').val(@qntUsed);
+    });
+</script>

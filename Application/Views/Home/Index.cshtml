@@ -1,0 +1,238 @@
+﻿@model IEnumerable<Book>
+@using RwaLib.MODELS
+@{
+    ViewBag.Title = "Index";
+    User user = ViewBag.user as User;
+    string flag = ViewBag.added as string;
+    IList<SelectListItem> filter = new List<SelectListItem> {
+        new SelectListItem{ Text = "A - Z", Value = "az"},
+        new SelectListItem{ Text = "Z - A", Value = "za"},
+    };
+    IList<SelectListItem> price = new List<SelectListItem> {
+        new SelectListItem{ Text = "From Highest to Lowest", Value = FILTER.MOST.ToString()},
+        new SelectListItem{ Text = "From Lowest to Highest", Value = FILTER.LEAST.ToString()},
+    };
+}
+
+
+<style>
+
+
+
+    .headline:hover {
+        text-decoration: none;
+    }
+
+    .books-dashboard {
+        display: flex;
+        margin-top: 10px;
+    }
+
+    .sorting-buttons{
+        margin-top:100px;
+        font-size:1.2vh;
+    }
+
+    .lbl-sort {
+        font-size: 1.2vh;
+        font-family: 'Merriweather', serif;
+    }
+
+    .filterBtn{
+        font-size:1.2vh;
+        background:#002D62;
+        border:none;
+    }
+
+    .books-buttons {
+        width: 20%;
+        border-right: solid 2px #A9A9A9;
+    }
+
+    .btn {
+        margin-left: 12.5%;
+        font-family: 'Merriweather', serif;
+    }
+
+    .books {
+        width: 80%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .book-card {
+        display: block;
+        height: fit-content;
+    }
+
+    .book-card {
+        
+        box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 10px 10px;
+        margin: 1vh;
+        width: 325px;
+        height: 550px;
+    }
+
+    .book-info {
+        font-family: 'Merriweather', serif;
+        height: 150px;
+    }
+
+        .book-info h4 {
+            color: #002D62;
+        }
+
+    .book-author {
+        text-decoration: none;
+        color: #002D62;
+        font-size: 1.4vh;
+        text-transform: uppercase;
+    }
+
+        .book-author:hover {
+            text-decoration: none;
+            color: #00308F;
+        }
+
+    .book-info p {
+        color: #002D62;
+        font-size: 1.4vh;
+    }
+
+    .info-btn {
+        transition: all .5s ease;
+        color: #002D62;
+        border: 3px solid #002D62;
+        font-family: 'Merriweather', serif;
+        text-transform: uppercase;
+        text-align: center;
+        line-height: 1;
+        font-size: 17px;
+        background-color: transparent;
+        padding: 10px;
+        outline: none;
+        border-radius: 4px;
+        margin-left: 30px;
+    }
+
+        .info-btn:hover {
+            color: white;
+            background-color: #002D62;
+            text-decoration: none;
+        }
+
+    .contact-button {
+        border: none;
+        background: none;
+    }
+
+    .book-action-buttons {
+        display: flex;
+        justify-content: center;
+        position: fixed;
+        top: 80px;
+        background-color: white;
+        background: transparent;
+        z-index: 8;
+    }
+
+    .action-btn {
+        display: inline-block;
+        position: relative;
+        color: #002D62;
+        border: none;
+        font-size: 1vh;
+        font-family: 'Merriweather', serif;
+        backdrop-filter: blur(5px);
+        padding: 10px;
+        border-radius: 6px;
+    }
+
+        .action-btn:focus {
+            border: 0;
+            outline: none;
+        }
+
+        .action-btn::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #002D62;
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+
+        .action-btn:hover:after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+</style>
+
+@using (Html.BeginForm())
+{
+    <div class="d-flex justify-content-center sorting-buttons">
+
+        <div class="d-flex w-25">
+            <label class="mt-2 lbl-sort">Sort alphabetical:</label>
+            @Html.DropDownList("filter", filter, new { @class = "btn btn-light" })
+        </div>
+
+        <div class="d-flex w-25">
+            <label class="mt-2 lbl-sort">Sort by price</label>
+            @Html.DropDownList("price", price, "-- Chose an option --", new { @class = "btn btn-light" })
+        </div>
+
+        <button class="btn btn-primary filterBtn">Apply Changes</button>
+
+    </div>
+        
+        
+    
+}
+
+
+
+<div class="books-dashboard w-100">
+
+    <div class="books ml-5 w-100" data-aos="fade-left">
+
+        @foreach (Book book in Model)
+        {
+            <div class="book-card">
+
+                <div class="book-img">
+
+                    <img src="@book.PicturePath" width="325px" height="350px" alt="">
+
+                </div>
+
+                <div class="book-info ml-2 mb-2 mt-2">
+
+                    <div class="book-headline">
+                        <h4>@book.Title</h4>
+                    </div>
+
+                    @Html.ActionLink(book.Author.FullName, "Index", "Author", new { id = book.Author.IDAuthor }, new { @class = "book-author" })
+
+                    <p class="mt-2">@book.Price HRK</p>
+
+                </div>
+
+                @Html.ActionLink("About book", "Index", "Book", new { title = book.Title }, new { @class = "info-btn ml-0 py-2 px-4 ml-4 rounded" })
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+
+
+
+

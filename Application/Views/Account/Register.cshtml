@@ -1,0 +1,139 @@
+﻿@model Application.Models.ApplicationRegisteredUser
+
+@{
+    ViewBag.Title = "Register";
+}
+
+<style>
+
+    .registration {
+        text-align: center;
+        position: fixed;
+        left: 30%;
+        top: 20%;
+        width: 40%;
+        border-radius: 20px;
+        background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+    }
+
+    #headline {
+        font-family: 'Merriweather', serif;
+        font-size: 3vh;
+        color: #002D62;
+    }
+
+    .btn {
+        font-size: 1.6vh;
+    }
+
+    .form-control {
+        font-size: 1.6vh;
+    }
+
+    .show-pswd{
+        font-size:1vh;
+    }
+</style>
+
+
+
+<div class="registration border border-secondary" data-aos="fade-down">
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <h1 class="p-3" id="headline">Registration</h1>
+
+        <div class="input-group mb-4">
+            <div class="input-group-prepend">
+                <img src="../images/person-icon.svg" alt="" width="40px" height="40px" class="mx-3">
+            </div>
+            @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control mr-4 rounded", placeholder = "Ime" } })
+
+            @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control mr-4 rounded", placeholder = "Prezime" } })
+
+            <div class="input-group d-flex justify-content-center mb-2">
+                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger px-2" })
+                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger px-2" })
+            </div>
+
+        </div>
+
+        <div class="input-group mb-4">
+            <div class="input-group-prepend">
+                <img src="../images/calendar-icon.svg" alt="" width="40px" height="40px" class="mx-3">
+            </div>
+            @Html.EditorFor(model => model.DateOfBirth, new { htmlAttributes = new { @class = "form-control mr-4 rounded", placeholder = "2011-04-12" } })
+            
+            <div class="input-group d-flex justify-content-center mb-2">
+                 @Html.ValidationMessageFor(model => model.DateOfBirth, "", new { @class = "text-danger px-2" })
+            </div>
+
+        </div>
+
+        <div class="input-group mb-4">
+            <div class="input-group-prepend">
+                <img src="../images/mail-icon.svg" alt="" width="40px" height="40x" class="mx-3">
+            </div>
+            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control mr-4 rounded", placeholder = "ime.prezime@email.com" } })
+            
+
+        <div class="input-group d-flex justify-content-center mb-2">
+            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger px-2" })
+        </div>
+
+        </div>
+
+        <div class="input-group mb-4">
+            <div class="input-group-prepend">
+                <img src="../images/key-icon.svg" alt="" width="40px" height="40px" class="mx-3">
+            </div>
+            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control mr-4 rounded", id="password", placeholder = "Lozinka" } })
+            <input type="checkbox" onclick="revealPassword()"/>
+            <p class="mt-4 mx-3 show-pswd">Prikaži lozinku</p>
+            
+
+        <div class="input-group d-flex justify-content-center mb-2">
+            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+        </div>
+
+        </div>
+
+        <div class="input-group mb-4">
+            <div class="input-group-prepend">
+                <img src="../images/house-icon.svg" alt="" width="40px" height="40px" class="mx-3">
+            </div>
+            @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control mr-4 rounded", placeholder = "Adresa i broj" } })
+            
+
+        <div class="input-group d-flex justify-content-center mb-2">
+            @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+        </div>
+
+        </div>
+
+
+        <div class="input-group mb-4">
+            <div class="input-group-prepend">
+                <img src="../images/point-icon.svg" alt="" width="40px" height="40px" class="mx-3">
+            </div>
+            @Html.EditorFor(model => model.CityName, new { htmlAttributes = new { @class = "form-control mr-4 rounded", placeholder = "Grad" } })
+            
+
+            @Html.EditorFor(model => model.ZipCode, new { htmlAttributes = new { @class = "form-control mr-4 rounded", placeholder = "Poštanski broj" } })
+            
+
+        <div class="input-group d-flex justify-content-center mb-2">
+            @Html.ValidationMessageFor(model => model.CityName, "", new { @class = "text-danger px-2" })
+            @Html.ValidationMessageFor(model => model.ZipCode, "", new { @class = "text-danger px-2" })
+        </div>
+
+        </div>
+            <button type="submit" class="btn btn-primary px-5 py-2 mx-5 mb-4">Registriraj se</button>
+            }
+        </div>
+
+

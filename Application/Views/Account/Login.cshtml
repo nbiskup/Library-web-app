@@ -1,0 +1,101 @@
+﻿@model RwaLib.MODELS.User
+@{
+    ViewBag.Title = "Login";
+    string msg = ViewBag.msg as string;
+}
+
+@if (msg != null)
+{
+    <div class="alert alert-info" role="alert">
+        @msg
+    </div>
+}
+
+<style>
+    #headline {
+        font-family: 'Merriweather', serif;
+        font-size: 3vh;
+        color: #002D62;
+    }
+
+    .login-form {
+        position: absolute;
+        top: 30%;
+        left: 25%;
+    }
+
+    .login-main {
+        border-radius: 10px;
+        text-align: center;
+        height: 300px;
+        background-color: #F0F0F0;
+    }
+
+
+    .forgot-pswd {
+        color: #002D62;
+        font-size: 1.6vh;
+        text-decoration: underline;
+    }
+
+        .forgot-pswd:hover {
+            color: #0066b2;
+        }
+
+    .btn {
+        font-size: 1.6vh;
+    }
+
+    .form-control {
+        font-size: 1.6vh;
+    }
+
+    .show-pswd {
+        font-size: 1vh;
+    }
+
+    #revealPswd {
+        justify-content: center;
+    }
+</style>
+
+<div class="login-form w-100" data-aos="fade-down">
+
+    @using (Html.BeginForm("Login", "Account", FormMethod.Get, new { @class = "login-main w-50 border border-secondary" }))
+    {
+        <h1 class="p-3" id="headline">Login</h1>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <img src="../images/mail-icon.svg" alt="" width="50px" height="50px" class="mx-3">
+            </div>
+            @Html.TextBoxFor(model => model.Email, new { @class = "form-control mr-4" })
+        </div>
+
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <img src="../images/key-icon.svg" alt="" width="50px" height="50px" class="mx-3">
+            </div>
+            <input type="password" name="password" id="password" class="form-control mr-4 mb-5" aria-label="" aria-describedby="basic-addon1">
+
+        </div>
+
+        <div class="input-group mb-2" id="revealPswd">
+
+            <input type="checkbox" onclick="revealPassword()" />
+            <p class="mx-3 mt-3 show-pswd">Show password</p>
+
+        </div>
+
+
+        <div class="action-buttons">
+
+            @Html.ActionLink("Register", "Register", null, new { @class = "btn btn-primary px-5 mx-5" })
+
+            <button type="submit" class="btn btn-info px-5">Login</button>
+
+        </div>
+    }
+
+</div>
+

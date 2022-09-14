@@ -1,0 +1,525 @@
+﻿@model RwaLib.MODELS.User
+@using RwaLib.DAL.Managers
+@using RwaLib.MODELS
+
+@{
+    int i = 1;
+    BookManager bm = ViewBag.bm as BookManager;
+    IEnumerable<Loan> adminLoans = ViewBag.adminLoans as IEnumerable<Loan>;
+}
+
+<style>
+    .wrapper {
+        display: flex;
+        margin-top: 100px;
+    }
+
+    .emp-photo {
+        display: flex;
+    }
+
+    #emp-name {
+        font-family: 'Merriweather', serif;
+    }
+
+    #nav-name {
+        font-family: 'Merriweather', serif;
+    }
+
+
+    #pic-change {
+        color: #002D62;
+        font-family: 'Merriweather', serif;
+        background-color: white;
+        border: solid 1px white;
+        border-radius: 7px;
+    }
+
+        #pic-change:hover {
+            transition: 200ms linear;
+            background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+        }
+
+
+
+    .cred {
+        display: flex;
+    }
+
+    .cred-name {
+        font-family: 'Merriweather', serif;
+        width: 35%;
+    }
+
+    .addNewEmp-modal {
+        width: 30%;
+        max-width: 50%;
+        height: fit-content;
+        max-height: 70%;
+        position: fixed;
+        top: 25%;
+        left: 35%;
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+        border-radius: 20px;
+        z-index: 10;
+        background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+    }
+
+        .addNewEmp-modal.active {
+            transform: scale(1);
+        }
+
+
+    .editInformation-modal {
+        width: 30%;
+        max-width: 50%;
+        height: 50%;
+        max-height: 70%;
+        position: fixed;
+        top: 25%;
+        left: 35%;
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+        border-radius: 20px;
+        z-index: 10;
+        background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+    }
+
+    .editInformation-modal.active {
+        transform: scale(1);
+    }
+    
+    .Modal-header {
+        text-align: center;
+        font-family: 'Merriweather', serif;
+        font-size: 2vh;
+    }
+
+        .Modal-header h3 {
+            color: #002D62;
+            font-size: 2vh;
+        }
+
+
+    .cred {
+        display: flex;
+    }
+
+        .cred h4 {
+            width: 55%;
+            font-family: 'Merriweather', serif;
+        }
+
+    #workplace {
+        width: 35%;
+    }
+
+    .btn-grad {
+        background-image: linear-gradient(to right, #4b6cb7 0%, #182848 51%, #4b6cb7 100%);
+        margin: 10px;
+        padding: 15px 45px;
+        text-align: center;
+        text-transform: uppercase;
+        transition: 0.5s;
+        background-size: 200% auto;
+        color: white;
+        box-shadow: 0 0 20px #eee;
+        border-radius: 10px;
+        display: block;
+        border: none;
+        font-size: 1vh;
+    }
+
+        .btn-grad:hover {
+            background-position: right center; /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+        }
+
+
+    .btn-grad-q {
+        background-image: linear-gradient(to right, #232526 0%, #414345 51%, #232526 100%);
+        margin: 10px;
+        padding: 15px 45px;
+        text-align: center;
+        text-transform: uppercase;
+        transition: 0.5s;
+        background-size: 200% auto;
+        color: white;
+        box-shadow: 0 0 20px #eee;
+        border-radius: 10px;
+        display: block;
+        border: none;
+        font-size: 1vh;
+    }
+
+        .btn-grad-q:hover {
+            background-position: right center; /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+        }
+
+    #overlay {
+        position: fixed;
+        opacity: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, .5);
+        pointer-events: none;
+    }
+
+        #overlay.active {
+            pointer-events: all;
+            opacity: 1;
+        }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    .bookModal-body {
+        display: flex;
+    }
+
+    .addNewBook-modal {
+        position: fixed;
+        top: 25%;
+        left: 15%;
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+        border-radius: 20px;
+        z-index: 10;
+        background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+    }
+
+        .addNewBook-modal.active {
+            transform: scale(1);
+        }
+
+    .addNewAuthor-modal {
+        position: fixed;
+        top: 25%;
+        left: 35%;
+        width: 30%;
+        max-width: 30%;
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+        border-radius: 20px;
+        z-index: 10;
+        background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+    }
+
+        .addNewAuthor-modal.active {
+            transform: scale(1);
+        }
+
+    .changePic-modal {
+        position: fixed;
+        top: 25%;
+        left: 35%;
+        width: 30%;
+        max-width: 30%;
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+        border-radius: 20px;
+        z-index: 10;
+        background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+    }
+
+        .changePic-modal.active {
+            transform: scale(1);
+        }
+
+    .changePassword-modal {
+        position: fixed;
+        top: 25%;
+        left: 35%;
+        width: 30%;
+        max-width: 30%;
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+        border-radius: 20px;
+        z-index: 10;
+        background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+    }
+
+        .changePassword-modal.active {
+            transform: scale(1);
+        }
+
+    .deactivateAccount-modal {
+        position: fixed;
+        top: 25%;
+        left: 35%;
+        width: 30%;
+        max-width: 30%;
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+        border-radius: 20px;
+        z-index: 10;
+        background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+    }
+
+        .deactivateAccount-modal.active {
+            transform: scale(1);
+        }
+
+    #emp-name, h4 {
+        font-size: 1.6vh;
+    }
+
+    #pic-change {
+        font-size: 1.2vh;
+    }
+
+    .cred input {
+        font-size: 1vh;
+    }
+
+    .btn {
+        font-size: 1vh;
+    }
+
+    table {
+        font-size: 1vh;
+    }
+
+    .checkbox {
+        margin-left: 40%;
+    }
+
+    select {
+        font-size: 1vh;
+    }
+
+    .alert {
+        font-size: 1vh;
+    }
+</style>
+
+
+<div class="wrapper">
+
+    <div class="emp-data w-25" data-aos="fade-right">
+
+        <div class="emp-photo my-3">
+            <div class="w-50">
+                <img src="../images/profile-torso.svg" class="ml-3 w-100 h-100" alt="">
+            </div>
+
+            <div>
+                <h4 class="p-4" id="emp-name">@Model.FirstName @Model.LastName</h4>
+            </div>
+        </div>
+
+        <div class="credentials mt-5">
+
+            <div class="cred my-5">
+
+                <h4 class="cred-name mx-2">E-mail</h4>
+
+                <input class="form-control mr-4" type="text" placeholder="@Model.Email" readonly>
+
+            </div>
+
+            <div class="cred my-5">
+
+                <h4 class="cred-name mx-2">Working position</h4>
+
+                <input class="form-control mr-4" type="text" placeholder="@Model.WorkPosition" readonly>
+
+            </div>
+
+            <div class="cred my-5">
+
+                <h4 class="cred-name mx-2">OIB</h4>
+
+                <input class="form-control mr-4" type="text" placeholder="@Model.OIB" readonly>
+
+            </div>
+
+            <div class="cred my-5">
+
+                <h4 class="cred-name mx-2">Date of birth</h4>
+
+                <input class="form-control mr-4" type="text" placeholder="@Model.DateOfBirth" readonly>
+
+            </div>
+        </div>
+
+        <div class="actions mt-5">
+
+            <div class="my-buttons d-flex justify-content-around">
+
+                @Html.ActionLink("Add new Employee", "NewEmployee", "Account", null, new { @class = "btn btn-light" })
+                @Html.ActionLink("Add new book", "New", "Book", null, new { @class = "btn btn-light" })
+                @Html.ActionLink("Add author", "New", "Author", null, new { @class = "btn btn-light" })
+                <button data-modal-target="#editInformation-modal" type="button" class="btn btn-light">Edit information</button>
+            </div>
+
+            <div class="my-buttons d-flex justify-content-around mt-5">
+
+                @using (Html.BeginForm("DeleteAcc", "Account", new { id = Model.IDUser }, FormMethod.Post, null))
+                {
+                    <div class="deactivateAccount-modal p-4 border border-secondary w-25" id="deactivateAccount-modal">
+
+                        <div class="Modal-header m-3">
+
+                            <h3>Delete account</h3>
+
+                        </div>
+
+                        <div class="alert alert-danger" role="alert">
+                            Are you shure that you want to delete this account?
+                        </div>
+
+                        <div class="action-buttons d-flex justify-content-center mt-3">
+
+                            <button type="submit" class="btn-grad">Pošalji</button>
+
+                            <button onclick="closeSelectedModal()" class="close-button btn-grad-q">Close</button>
+
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+    <div class="table-data w-75" data-aos="fade-left">
+        @using (Html.BeginForm("RefreshLoans", "Account"))
+        {
+            <button class="btn btn-outline-success px-5 fw-bold fs-5 m-4 w-25" style="border-radius: 50px">Refresh loans</button>
+        }
+        <table class="table table-striped" style="font-size: 1.4vh;">
+            <thead>
+                <tr>
+                    <td class="fw-bold">#</td>
+                    <td class="fw-bold">LoanID</td>
+                    <td class="fw-bold">Title</td>
+                    <td class="fw-bold">Author</td>
+                    <td class="fw-bold">State</td>
+                    <td class="fw-bold">Date of return</td>
+                    <td class="fw-bold">Loan cost</td>
+                    <td class="fw-bold">Delay amount</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Loan loan in adminLoans)
+                {
+                    using (Html.BeginForm("Return", "Account"))
+                    {
+                        <tr style="font-size: 1.4vh;">
+                            <td>@i</td>
+                            <td>@loan.IDLoan</td>
+                            <td>@loan.Book.Title</td>
+                            <td>@loan.Book.Author.FullName</td>
+                            <td>@loan.Book.Status.StatusName</td>
+                            <td>@loan.LoanEndDate.ToString("dd.MM.yyyy")</td>
+                            <td>@(Math.Abs(loan.LoanEndDate.Subtract(loan.LoanBeginDate).Days) * loan.DelayPrice)</td>
+                            <td>@loan.TotalDelayAmount kn</td>
+                            <td><button class="btn btn-outline-dark px-5 fw-bold" name="id" value="@loan.IDLoan" style="border-radius: 50px">Return</button> </td>
+                        </tr>
+                    }
+
+                    i++;
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+
+<div class="deactivateAccount-modal p-4 border border-secondary w-25" id="deactivateAccount-modal">
+
+    <div class="Modal-header m-3">
+
+        <h3>Delete account</h3>
+
+    </div>
+
+    <div class="alert alert-danger" role="alert">
+        Are you shure that you want delete this account?
+    </div>
+
+    <div class="action-buttons d-flex justify-content-center mt-3">
+
+        <button type="submit" class="btn-grad">Delete</button>
+
+    </div>
+
+</div>
+
+
+@using (Html.BeginForm("Update", "Account", FormMethod.Post, new { @class = "d-flex flex-column w-50" }))
+{
+    <div class="editInformation-modal p-4 border border-secondary" id="editInformation-modal">
+
+        <div class="Modal-header m-3">
+
+            <h3>Edit information</h3>
+
+        </div>
+
+        <div class="empModal-body">
+
+            <div class="credentials mt-5" style="height: 450px;">
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name mx-2">First name</h4>
+
+                    @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control mr-4" })
+                </div>
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name mx-2">Last name</h4>
+
+                    @Html.TextBoxFor(model => model.LastName, new { @class = "form-control mw-100" })
+
+                </div>
+
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name mx-2">Date-of-birth</h4>
+                    @Html.TextBoxFor(model => model.DateOfBirth, new { @class = "form-control mw-100" })
+
+                </div>
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name mx-2">Work position</h4>
+                    @Html.TextBoxFor(model => model.WorkPosition, new { @class = "form-control mw-100" })
+
+                </div>
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name mx-2">Oib</h4>
+                    @Html.TextBoxFor(model => model.OIB, new { @class = "form-control mw-100" })
+
+                </div>
+
+                <div class="action-buttons d-flex justify-content-center mt-5">
+
+                    <button type="submit" class="btn-grad">Submit</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

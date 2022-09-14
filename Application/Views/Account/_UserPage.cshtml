@@ -1,0 +1,572 @@
+﻿
+@model RwaLib.MODELS.User
+@using RwaLib.MODELS
+@{
+    string passmsg = ViewBag.msg as string;
+    string loans = ViewBag.loans as string;
+    IEnumerable<Loan> allLoans = ViewBag.allloans as IEnumerable<Loan>;
+    IEnumerable<Purchase> allBoughtBooks = ViewBag.allBoughtBooks as IEnumerable<Purchase>;
+    string idf = Model.IDUser.ToString();
+    User user = ViewBag.user as User;
+    int i = 1;
+    int ii = 1;
+    int numberOfSettledLoans = 0;
+}
+
+<style>
+
+    .wrapper {
+        margin-top: 100px;
+    }
+
+    .Modal-header {
+        text-align: center;
+        font-family: 'Merriweather', serif;
+    }
+
+        .Modal-header h3 {
+            color: #002D62;
+        }
+
+
+    .cred {
+        display: flex;
+    }
+
+        .cred h4 {
+            width: 55%;
+            font-family: 'Merriweather', serif;
+        }
+
+    .btn-grad {
+        background-image: linear-gradient(to right, #4b6cb7 0%, #182848 51%, #4b6cb7 100%);
+        margin: 10px;
+        padding: 15px 45px;
+        text-align: center;
+        text-transform: uppercase;
+        transition: 0.5s;
+        background-size: 200% auto;
+        color: white;
+        box-shadow: 0 0 20px #eee;
+        border-radius: 10px;
+        display: block;
+        border: none;
+        font-size: 1.4vh;
+    }
+
+        .btn-grad:hover {
+            background-position: right center; /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+        }
+
+
+    .btn-grad-q {
+        background-image: linear-gradient(to right, #232526 0%, #414345 51%, #232526 100%);
+        margin: 10px;
+        padding: 15px 45px;
+        text-align: center;
+        text-transform: uppercase;
+        transition: 0.5s;
+        background-size: 200% auto;
+        color: white;
+        box-shadow: 0 0 20px #eee;
+        border-radius: 10px;
+        display: block;
+        border: none;
+        font-size: 1.4vh;
+    }
+
+        .btn-grad-q:hover {
+            background-position: right center; /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+        }
+
+    #overlay {
+        position: fixed;
+        opacity: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, .5);
+        pointer-events: none;
+    }
+
+        #overlay.active {
+            pointer-events: all;
+            opacity: 1;
+        }
+
+    .modal-other {
+        text-align: center;
+        font-family: 'Merriweather', serif;
+        border: none;
+    }
+
+    .cred-other {
+        text-align: center;
+        font-family: 'Merriweather', serif;
+    }
+
+    .user-photo {
+        display: flex;
+    }
+
+    #user-name {
+        font-family: 'Merriweather', serif;
+    }
+
+    .wrapper {
+        display: flex;
+    }
+
+    .books{
+        font-size:1.6vh;
+    }
+
+    .user-table {
+        border-left: #414345 1px solid;
+    }
+
+    .books-table {
+        text-align: center;
+        margin-left: 25%;
+        border: #414345 2px solid;
+        border-radius: 10px;
+    }
+
+    .books h4 {
+        font-family: 'Merriweather', serif;
+        color: #002D62;
+    }
+
+    .books-table h4 {
+        font-family: 'Merriweather', serif;
+        color: #232526;
+    }
+
+    .books-table h5 {
+        font-family: 'Merriweather', serif;
+        color: #414345;
+    }
+
+    #frontpage-link {
+        text-decoration: none;
+        color: #232526;
+    }
+
+        #frontpage-link:hover {
+            color: #002D62;
+        }
+
+    .deactivateAccount-modal {
+        position: fixed;
+        top: 25%;
+        left: 35%;
+        width: 30%;
+        max-width: 30%;
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+        border-radius: 20px;
+        z-index: 10;
+        background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+    }
+
+        .deactivateAccount-modal.active {
+            transform: scale(1);
+        }
+
+    .changeUserPassword-modal {
+        position: fixed;
+        top: 25%;
+        left: 35%;
+        width: 30%;
+        max-width: 30%;
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+        border-radius: 20px;
+        z-index: 10;
+        background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+    }
+
+        .changeUserPassword-modal.active {
+            transform: scale(1);
+        }
+
+    .updateInfo-modal {
+        width: 30%;
+        max-width: 50%;
+        height: fit-content%;
+        max-height: 70%;
+        position: fixed;
+        top: 25%;
+        left: 35%;
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+        border-radius: 20px;
+        z-index: 10;
+        background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+    }
+
+        .updateInfo-modal.active {
+            transform: scale(1);
+        }
+
+    .loanInfo-modal {
+        position: fixed;
+        top: 25%;
+        left: 35%;
+        width: 30%;
+        max-width: 30%;
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+        border-radius: 20px;
+        z-index: 10;
+        background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+    }
+
+        .loanInfo-modal.active {
+            transform: scale(1);
+        }
+
+    #user-name, h4 {
+        font-size: 1.6vh;
+    }
+
+    .cred input {
+        font-size: 1.6vh;
+    }
+
+    .btn {
+        font-size: 1.6vh;
+    }
+
+    .alert {
+        font-size: 1.6vh;
+    }
+
+    .checkbox {
+        margin-left: 40%;
+    }
+
+    h3, h4, input {
+        font-size: 2vh;
+    }
+</style>
+
+
+<div class="wrapper w-100">
+
+    <div class="user-data w-25" data-aos="fade-right">
+
+        <div class="user-photo my-3">
+
+            <div class="w-50">
+
+                <img src="../images/profile-torso.svg" class="ml-3 w-100 h-100" alt="">
+
+            </div>
+
+            <div>
+
+                <h3 class="p-4 mt-5" id="user-name" style="font-size:1.4vh;">@Model.FirstName @Model.LastName</h3>
+
+            </div>
+
+        </div>
+
+        <div class="credentials mt-5" style="font-size:3vh;">
+
+            <div class="cred my-5" style="font-size:1.4vh;">
+
+                <h4 class="cred-name mx-2">E-mail</h4>
+
+                <input class="form-control mr-4" type="text" placeholder="@Model.Email" readonly>
+
+            </div>
+
+            <div class="cred my-5">
+
+                <h4 class="cred-name mx-2">City</h4>
+
+                <input class="form-control mr-4" type="text" placeholder="@Model.CityName" readonly>
+
+            </div>
+
+            <div class="cred my-5">
+
+                <h4 class="cred-name mx-2">ZipCode</h4>
+
+                <input class="form-control mr-4" type="text" placeholder="@Model.ZipCode" readonly>
+
+            </div>
+
+            <div class="cred my-5">
+
+                <h4 class="cred-name mx-2">Address</h4>
+
+                <input class="form-control mr-4" type="text" placeholder="@Model.Address" readonly>
+
+            </div>
+
+            <div class="cred my-5">
+
+                <h4 class="cred-name mx-2">Date of birth</h4>
+
+                <input class="form-control mr-4" type="text" placeholder="@Model.DateOfBirth" readonly>
+
+            </div>
+
+        </div>
+
+        <div class="actions mt-5">
+
+            <div class="my-buttons d-flex justify-content-around">
+
+                <button data-modal-target="#updateInfo-modal" type="button" class="btn btn-light">Edit information</button>
+
+                @Html.ActionLink("Change password", "NewPassword", "Account", null, new { @class = "btn btn-light" })
+
+
+                @if (allLoans.Count() > 0)
+                {
+                    <button data-modal-target="#loanInfo-modal" type="button" class="btn btn-danger">Delete your account</button>
+                }
+                else if (allLoans.Count() == 0)
+                {
+                    <button data-modal-target="#deactivateAccount-modal" type="button" class="btn btn-danger">Delete your account</button>
+                }
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="user-table w-75" data-aos="fade-left">
+
+        <div class="books">
+
+            <h4 class="p-5">Bought books</h4>
+
+            <div class="books-table w-50">
+
+                <h4 class="p-5">
+                    @if (allBoughtBooks.Count() == 0)
+                    {
+                        <div style="font-size:1.6vh;">You haven't bought any book yet</div>
+                    }
+                    else
+                    {
+                        <table class="table table-striped" style="font-size:1.6vh;">
+                            <thead style="font-size:1.6vh;">
+                                <tr>
+
+                                    <td class="fw-bold">IDPurcase</td>
+                                    <td class="fw-bold">Title</td>
+                                    <td class="fw-bold">Author</td>
+                                    <td class="fw-bold">Purchase date</td>
+                                    <td class="fw-bold">Price</td>
+                                </tr>
+                            </thead>
+                            <tbody style="font-size:1.6vh;">
+                                @foreach (Purchase purchase in allBoughtBooks)
+                                {
+
+                                    <tr>
+                                        <td>@ii</td>
+                                        <td>@purchase.Book.Title</td>
+                                        <td>@purchase.Book.Author.FullName</td>
+                                        <td>@purchase.PurchaseDate.ToString("dd.MM.yyyy")</td>
+                                        <td>@purchase.Book.Price kn</td>
+
+                                    </tr>
+                                    ii++;
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </h4>
+
+
+            </div>
+
+        </div>
+
+        <div class="books">
+
+            <h4 class="p-5">Borrowed books</h4>
+
+            <div class="books-table w-50">
+
+                <h4 class="p-5">
+                    @foreach (Loan loan in allLoans)
+                    {
+                        if (loan.IsSettled)
+                        {
+                            numberOfSettledLoans++;
+                        }
+                    }
+
+                    @if (numberOfSettledLoans == allLoans.Count())
+                    {
+                        <div style="font-size:1.6vh;">You can loan 3 books maximum!</div>
+                    }
+                    else
+                    {
+                        <table class="table table-striped" style="font-size:1.6vh;">
+                            <thead>
+                                <tr>
+
+                                    <td class="fw-bold">LoanID</td>
+                                    <td class="fw-bold">Title</td>
+                                    <td class="fw-bold">Author</td>
+                                    <td class="fw-bold">Loan begin date</td>
+                                    <td class="fw-bold">Date of return</td>
+                                    <td class="fw-bold">Delay amount</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Loan loan in allLoans)
+                                {
+                                    if (!loan.IsSettled)
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@loan.Book.Title</td>
+                                            <td>@loan.Book.Author.FullName</td>
+                                            <td>@loan.LoanBeginDate.ToString("dd.MM.yyyy")</td>
+                                            <td>@loan.LoanEndDate.ToString("dd.MM.yyyy")</td>
+                                            <td>@loan.DelayPrice kn</td>
+                                        </tr>
+                                        i++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </h4>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+@using (Html.BeginForm("DeleteAcc", "Account", new { id = Model.IDUser }, FormMethod.Post, null))
+{
+    <div class="deactivateAccount-modal p-4 border border-secondary w-25" id="deactivateAccount-modal">
+
+        <div class="Modal-header m-3">
+
+            <h3>Delete account</h3>
+
+        </div>
+
+        <div class="alert alert-danger" role="alert">
+            Are you shure that you want delete this account?
+        </div>
+
+        <div class="action-buttons d-flex justify-content-center mt-3">
+
+            <button type="submit" class="btn-grad">Submit</button>
+
+        </div>
+
+    </div>
+}
+
+<div class="loanInfo-modal p-4 border border-secondary w-25" id="loanInfo-modal">
+
+    <div class="Modal-header m-3">
+
+        <h3>Delete account</h3>
+
+    </div>
+
+        <div class="alert alert-danger" role="alert">
+            You have books to return!
+        </div>
+
+    <div class="action-buttons d-flex justify-content-center mt-3">
+    </div>
+
+</div>
+
+
+@using (Html.BeginForm("Update", "Account", FormMethod.Post, new { @class = "d-flex flex-column w-50" }))
+{
+    <div class="updateInfo-modal p-4 border border-secondary" id="updateInfo-modal">
+
+        <div class="Modal-header m-3">
+
+            <h3>Edit information</h3>
+
+        </div>
+
+        <div class="empModal-body">
+
+            <div class="credentials mt-5" style="height: 450px;">
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name mx-2">First name</h4>
+
+                    @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control mr-4" })
+                </div>
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name mx-2">Last name</h4>
+
+                    @Html.TextBoxFor(model => model.LastName, new { @class = "form-control mw-100" })
+
+                </div>
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name mx-2">Address</h4>
+
+                    @Html.TextBoxFor(model => model.Address, new { @class = "form-control mw-100" })
+
+                </div>
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name mx-2">City</h4>
+                    @Html.TextBoxFor(model => model.CityName, new { @class = "form-control mw-100" })
+
+                </div>
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name mx-2">Zip code</h4>
+                    @Html.TextBoxFor(model => model.ZipCode, new { @class = "form-control mw-100" })
+
+                </div>
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name mx-2">Date-of-birth</h4>
+                    @Html.TextBoxFor(model => model.DateOfBirth, new { @class = "form-control mw-100" })
+
+                </div>
+
+                <div class="action-buttons d-flex justify-content-center mt-5">
+
+                    <button type="submit" class="btn-grad">Submit</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+}
+
+

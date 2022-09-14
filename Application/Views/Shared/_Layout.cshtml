@@ -1,0 +1,349 @@
+﻿@using RwaLib.MODELS
+@{
+    User user = (User)Session["user"];
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap" rel="stylesheet">
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+</head>
+<body>
+    @RenderBody()
+    <style>
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            justify-content: center;
+        }
+
+        #search-bar {
+            font-size: 1.4vh;
+            max-width: 60%;
+        }
+
+        #search-icon {
+            margin-left: 15%;
+        }
+
+        .headline {
+            margin-left: 8%;
+            font-family: 'Merriweather', serif;
+            font-size: 4vh;
+            color: #002D62;
+        }
+
+
+        .nav-act-btn {
+            font-family: 'Merriweather', serif;
+            border: solid 1px #002D62;
+            color: #002D62;
+            font-size: 1.4vh;
+            padding: 10px;
+            border-radius: 6px;
+            transition: 200ms ease-in-out;
+            letter-spacing: 2px;
+        }
+
+            .nav-act-btn:hover {
+                text-decoration: none;
+                background-color: #E0E0E0;
+                border: solid 1px #E0E0E0;
+                color: black;
+            }
+
+        .contact-button {
+            border: none;
+            background: none;
+            margin-right: 0;
+        }
+
+            .contact-button:focus {
+                outline: none;
+            }
+
+        .contact-modal {
+            position: fixed;
+            top: 25%;
+            left: 35%;
+            width: 30%;
+            max-width: 30%;
+            height: fit-content;
+            transform: scale(0);
+            transition: 200ms ease-in-out;
+            border-radius: 20px;
+            z-index: 10;
+            background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+        }
+
+            .contact-modal.active {
+                transform: scale(1);
+            }
+
+        .Modal-header {
+            text-align: center;
+            font-family: 'Merriweather', serif;
+        }
+
+            .Modal-header h3 {
+                color: #002D62;
+            }
+
+
+        .cred {
+            display: flex;
+        }
+
+            .cred h4 {
+                width: 55%;
+                font-family: 'Merriweather', serif;
+            }
+
+        .btn-grad {
+            background-image: linear-gradient(to right, #4b6cb7 0%, #182848 51%, #4b6cb7 100%);
+            margin: 10px;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+            border: none;
+        }
+
+            .btn-grad:hover {
+                background-position: right center; /* change the direction of the change here */
+                color: #fff;
+                text-decoration: none;
+            }
+
+
+        .btn-grad-q {
+            background-image: linear-gradient(to right, #232526 0%, #414345 51%, #232526 100%);
+            margin: 10px;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+            border: none;
+        }
+
+            .btn-grad-q:hover {
+                background-position: right center; /* change the direction of the change here */
+                color: #fff;
+                text-decoration: none;
+            }
+
+        #overlay {
+            position: fixed;
+            opacity: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, .5);
+            pointer-events: none;
+            z-index: 9;
+        }
+
+            #overlay.active {
+                pointer-events: all;
+                opacity: 1;
+            }
+
+        .modal-other {
+            text-align: center;
+            font-family: 'Merriweather', serif;
+            border: none;
+        }
+
+        .cred-other {
+            text-align: center;
+            font-family: 'Merriweather', serif;
+        }
+
+        .navbar-brand {
+            font-family: 'Merriweather', serif;
+            font-size: 1.4vh;
+            color: #002D62;
+            border-radius: 20px;
+            background-image: linear-gradient(#bdc3c7,#2c3e50);
+            background-size: 200% .08em;
+            background-position: 200% 100%;
+            background-repeat: no-repeat;
+            transition: background-size .3s, background-position .3s .3s;
+        }
+
+            .navbar-brand:hover {
+                transition: background-size .3s .3s, background-position .3s;
+                background-size: 200% 100%;
+                background-position: 100% 100%;
+            }
+    </style>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light py-3">
+
+        @Html.ActionLink("BookMaster", "Index", "Home", new { area = "" }, new { @class = "headline" })
+
+
+        @using (Html.BeginForm("Index", "Home", FormMethod.Get, new { @class = "form-inline my-2 my-lg-0 w-50 h-50 search-bar mx-5" }))
+        {
+            <img src="../images/search-icon.svg" width="50px" height="50px" alt="" class="pr-2" id="search-icon">
+            <input class="form-control mr-sm-2 w-75 ml-0" type="search" placeholder="Search by title or author" id="search-bar" aria-label="Search">
+            <button class="nav-act-btn m-3" type="submit">Search</button>
+        }
+
+        @if (user is null)
+        {
+            @Html.ActionLink("Login", "Login", "Account", null, new { @class = "nav-act-btn m-3" })
+            @Html.ActionLink("Register", "Register", "Account", null, new { @class = "nav-act-btn m-3" })
+        }
+        else
+        {
+            if (user.IsAdmin)
+            {
+                @Html.ActionLink(user.FirstName + " " + user.LastName, "Index", "Account", null, new { @class = "navbar-brand p-3 px-5" })
+            }
+            else
+            {
+                @Html.ActionLink(user.FirstName + " " + user.LastName, "Index", "Account", null, new { @class = "navbar-brand p-3 px-5" })
+            }
+
+            @Html.ActionLink("LogOut", "LogOut", "Account", null, new { @class = "nav-act-btn m-3" })
+        }
+
+        @if (user is null)
+        {
+            <button data-modal-target="#contact-modal" class="contact-button ml-3"><img src="../images/question-icon.svg" width="50px" height="50px" alt=""></button>
+        }
+        else
+        {
+            if (!user.IsAdmin)
+            {
+                <button data-modal-target="#contact-modal" class="contact-button ml-3"><img src="../images/question-icon.svg" width="50px" height="50px" alt=""></button>
+            }
+        }
+
+    </nav>
+    @using (Html.BeginForm("Contact", "Library", FormMethod.Post, new { @class = "contact-modal p-4 border border-secondary", id = "contact-modal" }))
+        {
+
+                <div class="Modal-header m-3">
+
+                    <h3>Contact information</h3>
+
+                </div>
+
+                <div class="cred-other mt-5">
+
+                    <h4 class="cred-name mx-2">Phone number - 01 123 123</h4>
+
+                </div>
+
+                <div class="cred-other mt-5">
+
+                    <h4 class="cred-name mx-2">Address - Gradišćanska 26</h4>
+
+                </div>
+
+            }
+    
+    <div id="overlay"></div>
+
+
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+    <script>
+        const openModalButtons = document.querySelectorAll('[data-modal-target]')
+        const closeModalButtons = document.querySelectorAll('[data-close-button]')
+        const overlay = document.getElementById('overlay')
+
+
+
+        openModalButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const modal = document.querySelector(button.dataset.modalTarget)
+                openModal(modal)
+            })
+        })
+
+        overlay.addEventListener('click', () => {
+            const modals = document.querySelectorAll('.active')
+            modals.forEach(modal => {
+                closeModal(modal)
+            })
+        })
+
+        function openModal(modal) {
+            if (modal == null) return
+            modal.classList.add('active')
+            overlay.classList.add('active')
+            loginForm.classList.add('hidden')
+        }
+
+        closeModalButtons.addEventListener('click', closeSelectedModal())
+
+        function closeSelectedModal() {
+            const modals = document.querySelectorAll('.active')
+            modals.forEach(modal => {
+                closeModal(modal)
+            })
+
+        }
+
+        function closeModal(modal) {
+            if (modal == null) return
+            modal.classList.remove('active')
+            overlay.classList.remove('active')
+
+        }
+
+        function revealPassword() {
+            var x = document.getElementById("password")
+            var y = document.getElementById("newPassword")
+            if (x.type === "password") {
+                x.type = "text"
+            }
+            else {
+                x.type = "password"
+            }
+
+            if (y.type === "password") {
+                y.type = "text"
+            }
+            else {
+                y.type = "password"
+            }
+        }
+
+
+
+    </script>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+</body>
+</html>
+

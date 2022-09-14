@@ -1,0 +1,666 @@
+﻿@model RwaLib.MODELS.Book
+@using RwaLib.MODELS
+@{
+    ViewBag.Title = Model.Title;
+    string msg = ViewBag.msg as string;
+    User user = ViewBag.user as User;
+}
+@if (!string.IsNullOrEmpty(msg))
+{
+    <div class="alert alert-danger" role="alert">
+        @msg
+    </div>
+}
+
+<style>
+    .book {
+        display: block;
+        position: fixed;
+        top: 10%;
+        left: 12.5%;
+    }
+
+    .book-part {
+        display: flex;
+        justify-content: center;
+    }
+
+    .book-picture {
+        border-right: 3px solid #A9A9A9;
+    }
+
+    .book-info {
+        display: block;
+        margin-left: 7%;
+        margin-right: 7%;
+        text-align: center;
+        font-family: 'Merriweather', serif;
+    }
+
+        .book-info h3 {
+            font-size: 1.8vh;
+        }
+
+        .book-info h4 {
+            font-size: 1.5vh;
+            color: #002D62;
+        }
+
+    .info-part:first-of-type {
+        margin-top: 20%;
+    }
+
+    .info-part {
+        display: flex;
+        justify-content: center;
+    }
+
+        .info-part h5 {
+            font-size: 1.4vh;
+        }
+
+            .info-part h5:first-child {
+                color: #002D62;
+            }
+
+    .book-pricing {
+        display: block;
+        width: 45%;
+        font-family: 'Merriweather', serif;
+        border-left: 3px solid #A9A9A9;
+    }
+
+    .buy {
+        display: flex;
+        position: relative;
+        left: 20%;
+        top: 50%;
+    }
+
+    .borrow {
+        display: flex;
+        position: relative;
+        left: 20%;
+        top: 30%;
+    }
+
+    .money-btn {
+        font-size: 1.2vh;
+    }
+
+    textarea {
+        border: none;
+        font-size: 1.5vh;
+    }
+
+        textarea:focus {
+            outline: none;
+        }
+
+    .short-content h3 {
+        font-family: 'Merriweather', serif;
+        color: #002D62;
+    }
+
+    .book-specs {
+        display: block;
+        width: 35%;
+        font-family: 'Merriweather', serif;
+    }
+
+    .spec {
+        display: flex;
+        height: 20%;
+    }
+
+    .spec-name {
+        color: #002D62;
+    }
+
+    .spec h4 {
+        font-size: 1.4vh;
+    }
+
+
+
+    .btn-grad-q {
+        background-image: linear-gradient(to right, #232526 0%, #414345 51%, #232526 100%);
+        margin: 10px;
+        padding: 15px 45px;
+        text-align: center;
+        text-transform: uppercase;
+        transition: 0.5s;
+        background-size: 200% auto;
+        color: white;
+        box-shadow: 0 0 20px #eee;
+        border-radius: 10px;
+        display: block;
+        border: none;
+        font-size: 1.2vh;
+    }
+
+        .btn-grad-q:hover {
+            background-position: right center; /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+        }
+
+    .btn-grad {
+        background-image: linear-gradient(to right, #4b6cb7 0%, #182848 51%, #4b6cb7 100%);
+        margin: 10px;
+        padding: 15px 45px;
+        text-align: center;
+        text-transform: uppercase;
+        transition: 0.5s;
+        background-size: 200% auto;
+        color: white;
+        box-shadow: 0 0 20px #eee;
+        border-radius: 10px;
+        display: block;
+        border: none;
+        font-size: 1.2vh;
+    }
+
+        .btn-grad:hover {
+            background-position: right center; /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+        }
+
+    .empWarning-modal {
+        position: fixed;
+        top: 25%;
+        left: 35%;
+        width: 30%;
+        max-width: 30%;
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+        border-radius: 20px;
+        z-index: 10;
+        background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+        font-size: 1.4vh;
+    }
+
+        .empWarning-modal.active {
+            transform: scale(1);
+        }
+
+    #overlay {
+        position: fixed;
+        opacity: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, .5);
+        pointer-events: none;
+    }
+
+        #overlay.active {
+            pointer-events: all;
+            opacity: 1;
+        }
+
+    .empDeleteBook-modal {
+        position: fixed;
+        top: 25%;
+        left: 35%;
+        width: 30%;
+        max-width: 30%;
+        height: 14%;
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+        border-radius: 20px;
+        z-index: 10;
+        background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+    }
+
+        .empDeleteBook-modal.active {
+            transform: scale(1);
+        }
+
+    .Modal-header {
+        text-align: center;
+        font-family: 'Merriweather', serif;
+    }
+
+        .Modal-header h3 {
+            font-size: 1.4vh;
+            color: #002D62;
+        }
+
+    .alert {
+        font-size: 1.2vh;
+    }
+
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    .bookModal-body {
+        display: flex;
+    }
+
+    .empUpdateBook-modal {
+        position: fixed;
+        top: 10%;
+        left: 15%;
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+        border-radius: 20px;
+        z-index: 10;
+        background: radial-gradient(343px at 46.3% 47.5%, rgb(242, 242, 242) 0%, rgb(241, 241, 241) 72.9%);
+    }
+
+        .empUpdateBook-modal.active {
+            transform: scale(1);
+        }
+
+    .cred {
+        display: flex;
+    }
+
+        .cred h4 {
+            width: 55%;
+            font-family: 'Merriweather', serif;
+        }
+
+    .upd-del-buttons {
+        position: fixed;
+        top: 35%;
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn {
+        font-size: 1.4vh;
+        margin: 10px;
+    }
+
+        .btn:focus {
+            outline: none;
+        }
+
+    .cred input {
+        font-size: 1vh;
+    }
+
+    .cred select {
+        font-size: 1vh;
+    }
+</style>
+
+
+
+<div class="book w-75">
+
+    <div class="book-part" data-aos="fade-down">
+
+        <div class="book-picture p-3 mr-5">
+
+            <img class="mr-5" src="@Model.PicturePath" alt="">
+
+        </div>
+
+        <div class="book-info">
+
+            <h3 class="mt-5">@Model.Title</h3>
+
+            <h4 class="my-4">
+                @Html.ActionLink(Model.Author.FullName, "Index", "Author", new { id = Model.Author.IDAuthor }, new { @class = "book-author" })
+            </h4>
+
+            <div class="info-part">
+
+                <h5 class="mx-3">Status:</h5>
+
+                <h5>@Model.Status.StatusName</h5>
+
+            </div>
+
+            <div class="info-part">
+
+                <h5 class="mx-3">Quantity:</h5>
+
+                <h5>@Model.Quantity</h5>
+
+            </div>
+
+        </div>
+
+        <div class="book-pricing ml-5">
+
+            <div class="book-action h-50 w-100">
+                <div class="buy">
+                    <button data-modal-target="#empWarning-modal" type="button" class="btn btn-dark h-25 money-btn">Buy</button>
+
+                    <h4 class="ml-5">@Model.Price HRK</h4>
+                </div>
+            </div>
+
+            <div class="book-action h-50 w-100">
+
+                <div class="borrow">
+
+                    <button data-modal-target="#empWarning-modal1" type="button" class="btn btn-light h-25 money-btn">Loan</button>
+
+                    <h4 class="ml-5">@Model.LoanPrice HRK/day</h4>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="book-part  mt-4" data-aos="fade-up">
+
+        <div class="short-content">
+
+            <h3 class="ml-4">Description</h3>
+
+            <textarea class="p-4" name="" id="" cols="70" rows="12" readonly>@Model.Description</textarea>
+        </div>
+
+        <div class="book-specs ml-5 mt-5">
+
+            <div class="spec  ml-5">
+
+                <h4 class="spec-name mx-2"> ISBN:</h4>
+
+                <h4 class="spec-data mx-2">@Model.ISBN</h4>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (user != null && user.IsAdmin)
+{
+    <div class="upd-del-buttons" data-aos="flip-up">
+        <button data-modal-target="#empUpdateBook-modal" type="button" class="btn btn-warning h-25">Edit book</button>
+
+        <button data-modal-target="#empDeleteBook-modal" type="button" class="btn btn-danger h-25">Delete book</button>
+
+    </div>
+}
+
+<div class="empWarning-modal p-4 border border-secondary w-25" id="empWarning-modal">
+
+    @if (user == null || user.IsAdmin)
+    {
+        <div class="alert alert-danger" role="alert">
+            Please login if you want to buy or loan book!
+        </div>
+
+        <div class="d-flex justify-content-center mt-3">
+            <button onclick="closeSelectedModal()" class="close-button btn-grad-q">Close</button>
+        </div>
+    }
+
+    @if (user != null && !user.IsAdmin)
+    {
+        using (Html.BeginForm("Purchase", "Book", new { title = Model.Title }, FormMethod.Post, new { @class = "d-flex flex-column align-content-center justify-content-center w-100 h-50" }))
+        {
+            <div style="border: 1px solid #ccc; " class=" p-3 w-100 d-flex flex-column justify-content-center align-content-center">
+                <label class="form-label fw-bold my-4">How would you like to pay for the book:</label>             
+                <button class="btn btn-outline-info my-2" name="placanje" value="cash">Cash</button>
+
+
+            </div>
+        }
+
+        <div class="d-flex justify-content-center mt-3">
+
+            <button onclick="closeSelectedModal()" class="close-button btn-grad-q">Close</button>
+
+        </div>
+    }
+
+
+
+
+
+
+</div>
+
+
+<div class="empWarning-modal p-4 border border-secondary w-25" id="empWarning-modal1">
+
+    @if (user == null || user.IsAdmin)
+    {
+        <div class="alert alert-danger" role="alert">
+            Please login if you want to loan book!
+        </div>
+
+        <div class="d-flex justify-content-center mt-3">
+            <button onclick="closeSelectedModal()" class="close-button btn-grad-q">Close</button>
+        </div>
+    }
+
+    @if (user != null && !user.IsAdmin)
+    {
+        using (Html.BeginForm("Loan", "Book", new { title = Model.Title }, FormMethod.Post, new { @class = "d-flex flex-column align-content-center justify-content-center w-100 h-50" }))
+        {
+            <div style="border: 1px solid #ccc; " class=" p-3 w-100 d-flex flex-column justify-content-center align-content-center">
+                <label class="form-label fw-bold my-2">Loan begin date:</label>
+                <input type="date" class="form-control" id="fromDate" name="pocetak" />
+                <label class="form-label fw-bold my-2">Loan end date:</label>
+                <input type="date" class="form-control" id="toDate" name="kraj" />
+
+                <button class="btn btn-primary mt-4 mw-100">Confirm</button>
+            </div>
+        }
+
+        <div class="d-flex justify-content-center mt-3">
+
+            <button onclick="closeSelectedModal()" class="close-button btn-grad-q">Close</button>
+
+        </div>
+    }
+
+
+
+
+
+
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#fromDate').change(function () {
+            var fromDate = $('#fromDate').val();
+            $('#toDate').prop('disabled', false);
+            $("#toDate").attr("min", fromDate);
+        });
+    });
+</script>
+
+
+@if (user != null && user.IsAdmin)
+{
+    using (Html.BeginForm("DeleteBook", "Book", new { idbook = Model.IDBook }, FormMethod.Post, null))
+    {
+        <div class="empDeleteBook-modal p-4 border border-secondary w-25" id="empDeleteBook-modal">
+
+            <div class="Modal-header m-3">
+
+                <h3>Delete book</h3>
+
+            </div>
+
+            <div class="alert alert-danger" role="alert">
+                Are you shure that you want delete this book?
+            </div>
+
+            <div class="action-buttons d-flex justify-content-center mt-3">
+
+                <button type="submit" class="btn-grad">Delete</button>
+
+                <button onclick="closeSelectedModal()" class="close-button btn-grad-q">Close</button>
+
+            </div>
+
+        </div>
+    }
+}
+
+
+<div class="empUpdateBook-modal p-4 border border-secondary" id="empUpdateBook-modal" style="width:70%;">
+
+    <div class="Modal-header m-3">
+
+        <h3>Edit book</h3>
+
+    </div>
+
+    <div class="bookModal-body">
+
+        <div class="book-body-part w-50">
+
+            <div class="info ">
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name mx-2">Title</h4>
+
+                    <input class="form-control mr-4" type="text" value="@Model.Title">
+
+                </div>
+
+            </div>
+
+            <div class="info">
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name mx-2">ISBN</h4>
+
+                    <input class="form-control mr-4" type="text" value="@Model.ISBN">
+
+                </div>
+
+            </div>
+
+            <div class="info">
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name ml-2" style="width: 35%;">Author</h4>
+
+                    <div class="author-select">
+
+                        <select class="p-2 border border-secondary rounded">
+
+                            <option value="0">Select author:</option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="cred mt-5">
+
+                <h4 class="cred-name mx-2">Description</h4>
+
+                <textarea class="form-control mr-4" rows="3" style="height: 200px;">@Model.Description</textarea>
+
+            </div>
+
+            <div class="cred mt-5">
+
+                <h4 class="cred-name mx-2">Picture path</h4>
+
+                <input class="form-control mr-4" type="text" value="@Model.PicturePath.ToString()">
+
+            </div>
+
+
+        </div>
+
+        <div class="book-body-part w-50">
+
+            <div class="info ">
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name mx-2">Buy price</h4>
+
+                    <input class="form-control mr-4" type="number" value="@Model.Price">
+
+                </div>
+
+            </div>
+
+            <div class="info">
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name mx-2">Loan price</h4>
+
+                    <input class="form-control mr-4" type="number" value="@Model.LoanPrice">
+
+                </div>
+
+            </div>
+
+            <div class="info">
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name mx-2">Quantity</h4>
+
+                    <input class="form-control mr-4" type="number" value="@Model.Quantity">
+
+                </div>
+
+            </div>
+
+            <div class="info">
+
+                <div class="cred mt-5">
+
+                    <h4 class="cred-name ml-2" style="width: 35%;">Status</h4>
+
+                    <div class="condition-select">
+
+                        <select class="p-2 border border-secondary rounded">
+
+                            <option value="0">Select:</option>
+                            <option value="1">New</option>
+                            <option value="2">Used</option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+
+    <div class="d-flex justify-content-center mt-5">
+
+        <button class="btn-grad">Submit</button>
+
+        <button onclick="closeSelectedModal()" class="close-button btn-grad-q">Close</button>
+
+    </div>
+
+</div>
+
+
